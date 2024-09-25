@@ -1,0 +1,33 @@
+export const ScreeName = {
+  ENTER_ORG_CODE_SCREEN: "enterOrgCode",
+  SIGN_IN_SCREEN: "signinscreen",
+  FORGET_PSWRD: "forgetpassword",
+  OTP_VERIFY: "otpverify",
+  RESET_PSWRD: "resetpass",
+  HOME_SCREEN: "homescreen",
+  PROFILE: "profile",
+  CHANGE_PSWRD: "changepassword",
+  GUEST_GLITCH_LIST: "guestglitchlist",
+  GUEST_GLITCH_ADD: "guestglitchadd",
+  GUEST_GLITCH_DETAIL: "guestglitchdetail",
+  GUEST_GLITCH_EDIT: "guestglitchedit",
+  INCIDENT_REPORT_LIST: "incidentreportlist",
+  INCIDENT_REPORT_ADD: "incidentreportadd",
+  INCIDENT_REPORT_DETAIL: "incidentreportdetail",
+  SRMS_LIST: "srmslist",
+  SRMS_ADD: "srmsadd",
+  SRMS_MANAGE_SHIFT: "srmsmanageshift",
+  DAILY_REVENUE_REPORT: "DailyRevenueReportScreen",
+  DAILY_SALES_REPORT_LIST: "DailySalesReportScreen",
+  DAILY_SALES_REPORT_ADD_VISIT: "DailySalesReportAddVisit",
+  DAILY_SALES_REPORT_VISIT_LIST: "DailySalesReportVisitList",
+  DAILY_SALES_REPORT_NEW_CONTACT: "DailySalesReportNewContact",
+  DAILY_SALES_REPORT_CONTACT_LIST: "DailySalesReportContactList",
+  DAILY_SALES_REPORT_ACCOUNT_ENTRY: "DailySalesReportAccountEntry",
+};
+
+export const Icons = {
+  LOGO: require("../assets/Images/logo.png"),
+  AUTH_IMG: require("../assets/Images/Auth.png"),
+  KEY: require("../assets/Images/keyIcon.png"),
+};
