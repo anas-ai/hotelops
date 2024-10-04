@@ -1,5 +1,5 @@
-import { SafeAreaView, ScrollView, StyleSheet, Text, View } from "react-native";
-import React from "react";
+import { SafeAreaView, ScrollView, StyleSheet, View } from "react-native";
+import React, { useEffect, useState } from "react";
 import { globalStyles } from "../../../utils/globalStyle";
 import BackButtonHead from "../../../components/backButtonHead";
 import { ScreeName } from "../../../utils/constants";
@@ -7,19 +7,61 @@ import Plus from "../../../assets/Images/pluscircle.svg";
 import Edit from "../../../assets/Images/editWhite.svg";
 import Search from "../../../assets/Images/searchoutline.svg";
 import AccountDetailCard from "./accountDetailCard";
-import { useForm } from "react-hook-form";
+import { useForm, Controller } from "react-hook-form";
 import { TextBox } from "../../../components/form/textBox";
-const data: any = [
-  { label: "Date & Time", value: "March 6, 2023 04:10 pm" },
-  { label: "Guest Name", value: "Vishal Menaria" },
-  { label: "Room", value: "101" },
-];
+import { getItem } from "../../../utils/asyncStorage";
+import axiosInstance from "../../../utils/axios";
+import { URLS } from "../../../api";
+
 const DailySalesReportList = (props: any) => {
+  const [accountList, setAccountList] = useState<any>([]);
+  const [filteredAccountList, setFilteredAccountList] = useState<any>([]);
   const {
     control,
-    handleSubmit,
+    watch,
     formState: { errors },
   } = useForm({ defaultValues: { search: "" } });
+
+  // Watch for the search input changes
+  const searchValue = watch("search");
+
+  // Fetch account list from API
+  const getAccountList = async () => {
+    const organizationId = await getItem<string>("organizationId");
+    try {
+      const res = await axiosInstance.get(`${URLS.DSR_ACCOUNT_LIST}`, {
+        params: { OID: organizationId },
+      });
+      if (res.status === 200) {
+        setAccountList(res?.data);
+        setFilteredAccountList(res?.data); // Set the initial filtered list
+      }
+    } catch (error) {
+      console.log(error, "errors");
+    }
+  };
+
+  // Effect to fetch account list once component mounts
+  useEffect(() => {
+    getAccountList();
+  }, []);
+
+  // Effect to filter account list whenever the search value changes
+  useEffect(() => {
+    if (searchValue) {
+      const filtered = accountList?.filter(
+        (item: any) =>
+          item?.CompanyName?.toLowerCase().includes(
+            searchValue.toLowerCase()
+          ) ||
+          item?.AccountNumber?.toLowerCase().includes(searchValue.toLowerCase())
+      );
+      setFilteredAccountList(filtered);
+    } else {
+      setFilteredAccountList(accountList);
+    }
+  }, [searchValue, accountList]);
+
   return (
     <SafeAreaView style={[globalStyles.container]}>
       <ScrollView
@@ -47,37 +89,56 @@ const DailySalesReportList = (props: any) => {
             endIcon={<Search width={20} height={20} />}
           />
         </View>
-        <AccountDetailCard
-          props={props}
-          listData={data}
-          title="Account# 196"
-          visitAdd={() =>
-            props.navigation.navigate(ScreeName.DAILY_SALES_REPORT_ADD_VISIT, {
-              id: "new",
-            })
-          }
-          visitList={() =>
-            props.navigation.navigate(ScreeName.DAILY_SALES_REPORT_VISIT_LIST)
-          }
-          contactAdd={() =>
-            props.navigation.navigate(ScreeName.DAILY_SALES_REPORT_NEW_CONTACT)
-          }
-          contactList={() =>
-            props.navigation.navigate(ScreeName.DAILY_SALES_REPORT_CONTACT_LIST)
-          }
-          headerIcon={
-            <>
-              <Edit
-                onPress={() =>
-                  props.navigation.navigate(
-                    ScreeName.DAILY_SALES_REPORT_ADD_VISIT,
-                    { id: "edit" }
-                  )
-                }
-              />
-            </>
-          }
-        />
+
+        {/* Render filtered account list */}
+        {filteredAccountList?.map((item: any, index: number) => {
+          const data: any = [
+            { label: "Name", value: item?.CompanyName || "N/A" },
+            { label: "Mail Id", value: item?.EmailID || "N/A" },
+            { label: "Address", value: item?.Address || "N/A" },
+          ];
+          return (
+            <AccountDetailCard
+              key={index}
+              props={props}
+              listData={data}
+              title={`Account #${item.AccountNumber}`}
+              visitAdd={() =>
+                props.navigation.navigate(
+                  ScreeName.DAILY_SALES_REPORT_ADD_VISIT,
+                  {
+                    id: "new",
+                  }
+                )
+              }
+              visitList={() =>
+                props.navigation.navigate(
+                  ScreeName.DAILY_SALES_REPORT_VISIT_LIST
+                )
+              }
+              contactAdd={() =>
+                props.navigation.navigate(
+                  ScreeName.DAILY_SALES_REPORT_NEW_CONTACT
+                )
+              }
+              contactList={() =>
+                props.navigation.navigate(
+                  ScreeName.DAILY_SALES_REPORT_CONTACT_LIST
+                )
+              }
+              headerIcon={
+                <Edit
+                  onPress={() =>
+                    props.navigation.navigate(
+                      ScreeName.DAILY_SALES_REPORT_ADD_VISIT,
+                      { id: "edit" }
+                    )
+                  }
+                />
+              }
+            />
+          );
+        })}
       </ScrollView>
     </SafeAreaView>
   );

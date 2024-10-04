@@ -69,7 +69,7 @@ const SrmsList = (props: any) => {
     useEffect(() => {
       getServiceRequestMaster();
     }, []);
-    console.log(masterData,'masterData');
+    // console.log(masterData,'masterData');
   
 
   return (
