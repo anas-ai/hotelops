@@ -32,37 +32,42 @@ const EnterOrgCodeScreen = (props: any) => {
     formState: { errors, isSubmitting },
   } = useForm({ defaultValues: { code: "" } });
 
-  const onSubmit = async (data: any) => {
-    try {
-      await axiosInstance
-        .get(`${URLS.ORGANIZATION_SELECT}?OrganizationCode=${data?.code}`)
-        .then(async (response: any) => {
-          if (response?.data?.[0]?.Success === 1) {
-            await setItem(
-              "organizationId",
-              response?.data?.[0]?.OrganizationID
-            );
+  // const onSubmit = async (data: any) => {
+  //   try {
+  //     await axiosInstance
+  //       .get(`${URLS.ORGANIZATION_SELECT}?OrganizationCode=${data?.code}`)
+  //       .then(async (response: any) => {
+  //         if (response?.data?.[0]?.Success === 1) {
+  //           await setItem(
+  //             "organizationId",
+  //             response?.data?.[0]?.OrganizationID
+  //           );
+  //           props.navigation.navigate(ScreeName.SIGN_IN_SCREEN);
+  //         } else {
+  //           setError("code", {
+  //             type: "manual",
+  //             message:
+  //               response?.data?.[0]?.ErrorMessage ||
+  //               "Invalid organization code",
+  //           });
+  //         }
+  //       })
+  //       .catch((err: any) => {
+  //         setError("code", {
+  //           type: "manual",
+  //           message:
+  //             err?.data?.[0]?.ErrorMessage || "Invalid organization code",
+  //         });
+  //       });
+  //   } catch (error) {
+  //     console.log(error);
+  //   }
+  // };
+  const onSubmit = async () => {
+    // Navigate to the Home Screen without validation
             props.navigation.navigate(ScreeName.SIGN_IN_SCREEN);
-          } else {
-            setError("code", {
-              type: "manual",
-              message:
-                response?.data?.[0]?.ErrorMessage ||
-                "Invalid organization code",
-            });
-          }
-        })
-        .catch((err: any) => {
-          setError("code", {
-            type: "manual",
-            message:
-              err?.data?.[0]?.ErrorMessage || "Invalid organization code",
-          });
-        });
-    } catch (error) {
-      console.log(error);
-    }
-  };
+};
+  
   console.log(errors.code?.message, "message");
   return (
     <SafeAreaView style={[globalStyles.container]}>
@@ -78,7 +83,7 @@ const EnterOrgCodeScreen = (props: any) => {
               control={control}
               errors={errors.code}
               name="code"
-              required={true}
+              required={false}
               placeholder="Organization Code"
               startIcon={<Key width={24} height={24} />}
             />

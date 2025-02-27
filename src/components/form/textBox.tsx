@@ -1,6 +1,6 @@
 import React from "react";
 import { Controller } from "react-hook-form";
-import { StyleSheet, Text, TextInput, View } from "react-native";
+import { KeyboardAvoidingView, StyleSheet, Text, TextInput, View } from "react-native";
 import { globalStyles } from "../../utils/globalStyle";
 import { colors } from "../../styles/colores";
 
@@ -20,7 +20,7 @@ export const TextBox = ({
   endIcon,
 }: any) => {
   return (
-    <View>
+    <KeyboardAvoidingView>
       <Controller
         control={control}
         name={name}
@@ -60,7 +60,7 @@ export const TextBox = ({
           {errors?.message ? errors?.message : "This field is required"}
         </Text>
       )}
-    </View>
+    </KeyboardAvoidingView>
   );
 };
 
